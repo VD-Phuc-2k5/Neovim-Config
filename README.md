@@ -1,29 +1,29 @@
 # Neovim configuration
 
-# Vim-plug installation
+## 1. Vim-plug installation
 
-## Unix, Linux
+### Unix, Linux
 
 ```bash
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 ```
 
-## Linux (Flatpak)
+### Linux (Flatpak)
 
 ```bash
 curl -fLo ~/.var/app/io.neovim.nvim/data/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
 
-## Windows (PowerShell)
+### Windows (PowerShell)
 
 ```bash
 iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
     ni "$(@($env:XDG_DATA_HOME, $env:LOCALAPPDATA)[$null -eq $env:XDG_DATA_HOME])/nvim-data/site/autoload/plug.vim" -Force
 ```
 
-# vim.init
+## 2. vim.init
 
 ```bash
 " ====== BASIC SETTINGS ======
@@ -566,7 +566,7 @@ command! DebugInfo :lua print("DAP Status: " .. vim.inspect(require('dap').statu
 command! CheckHealth :checkhealth mason | :checkhealth dap
 ```
 
-# coc-settings.json (:CocConfig)
+## 3. coc-settings.json (:CocConfig)
 
 ```bash
 {
