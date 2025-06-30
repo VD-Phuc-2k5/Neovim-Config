@@ -23,7 +23,7 @@ iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
     ni "$(@($env:XDG_DATA_HOME, $env:LOCALAPPDATA)[$null -eq $env:XDG_DATA_HOME])/nvim-data/site/autoload/plug.vim" -Force
 ```
 
-## 2. vim.init
+## v1. vim.init
 
 ```bash
 " ====== BASIC SETTINGS ======
@@ -564,6 +564,296 @@ command! InstallDebugDeps :MasonInstall node-debug2-adapter chrome-debug-adapter
 command! InstallTSRuntime :!npm install -g ts-node tsx nodemon
 command! DebugInfo :lua print("DAP Status: " .. vim.inspect(require('dap').status()))
 command! CheckHealth :checkhealth mason | :checkhealth dap
+```
+
+## v2. vim.init
+
+```bash
+" ====== BASIC SETTINGS ======
+set encoding=UTF-8
+set autoindent smartindent
+set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+set mouse=a
+set completeopt=menuone,noinsert,noselect,preview
+set termguicolors
+set clipboard=unnamedplus
+set updatetime=300
+set timeoutlen=500
+set hidden nobackup nowritebackup
+set cmdheight=1
+set shortmess+=c
+set signcolumn=yes
+set norelativenumber
+set number
+
+" ====== PLUGINS ======
+call plug#begin('~/.local/share/nvim/plugged')
+
+" UI & Tools
+Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'ryanoasis/vim-devicons'
+Plug 'preservim/nerdtree'
+Plug 'lukas-reineke/indent-blankline.nvim'
+
+" Language Support
+Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
+Plug 'yuezk/vim-js'
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'othree/html5.vim'
+Plug 'hail2u/vim-css3-syntax'
+Plug 'ap/vim-css-color'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
+" LSP & Completion
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'jose-elias-alvarez/null-ls.nvim'
+
+" Navigation
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter-context'
+Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
+
+" Git
+Plug 'lewis6991/gitsigns.nvim'
+Plug 'tpope/vim-fugitive'
+
+" Utilities
+Plug 'voldikss/vim-floaterm'
+Plug 'mattn/emmet-vim'
+Plug 'windwp/nvim-autopairs'
+Plug 'windwp/nvim-ts-autotag'
+
+" Better Indentation
+Plug 'Darazaki/indent-o-matic'
+
+call plug#end()
+
+" ====== PLUGIN SETUP ======
+lua <<EOF
+
+-- Cấu hình indent-o-matic
+require('indent-o-matic').setup{
+  max_lines = 2048,
+  standard_widths = { 2, 4, 8 },
+}
+
+-- Cấu hình nâng cao cho autopairs
+local npairs = require("nvim-autopairs")
+local Rule = require('nvim-autopairs.rule')
+
+npairs.setup({
+  check_ts = true,
+  ts_config = {
+    lua = {'string'},
+    javascript = {'template_string'}, 
+  }
+})
+
+-- Thêm rule cho HTML/JSX
+npairs.add_rules({
+  Rule(' ', ' ')
+    :with_pair(function(opts)
+      return vim.tbl_contains({'text', 'html'}, vim.bo.filetype)
+    end)
+    :with_move(function() return true end)
+    :with_cr(function() return false end),  
+})
+
+-- Tích hợp autopairs với completion
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+local cmp = require('cmp')
+cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
+
+-- Telescope setup
+require('telescope').setup{
+  defaults = {
+    file_ignore_patterns = {"node_modules", ".git"},
+    layout_strategy = "horizontal",
+    layout_config = { preview_width = 0.6 }
+  }
+}
+
+-- Setup gitsigns
+require('gitsigns').setup()
+
+-- Setup bufferline
+require("bufferline").setup{}
+EOF
+
+" ====== COLORSCHEME ======
+colorscheme dracula
+
+" ====== KEY MAPPINGS ======
+let mapleader = "\<Space>"
+
+" Navigation
+nnoremap <silent> <C-p> :Telescope find_files<CR>
+nnoremap <leader>ff :Telescope live_grep<CR>
+nnoremap <leader>fb :Telescope buffers<CR>
+nnoremap <leader>fh :Telescope help_tags<CR>
+
+" Buffer management
+nnoremap <Tab> :bnext<CR>
+nnoremap <S-Tab> :bprevious<CR>
+nnoremap <C-c> :bdelete<CR>
+
+" NERDTree
+nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+" Save
+nnoremap <C-s> :w<CR>
+inoremap <C-s> <Esc>:w<CR>a
+
+" Terminal
+nnoremap <C-t> :FloatermToggle<CR>
+tnoremap <C-t> <C-\><C-n>:FloatermToggle<CR>
+let g:floatern_width = 0.9
+let g:floaterm_height = 0.9
+if has('win32') || has('win64')
+  let g:floaterm_shell = 'powershell -NoExit'
+endif
+" ====== PLUGIN CONFIGURATION ======
+" Airline
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme = 'dracula'
+
+" ====== COC CONFIGURATION ======
+let g:coc_global_extensions = [
+  \ 'coc-tsserver',
+  \ 'coc-json',
+  \ 'coc-html',
+  \ 'coc-css',
+  \ 'coc-prettier',
+  \ 'coc-eslint',
+  \ 'coc-go',
+  \ ]
+
+" Block coc-import-cost from being installed/loaded
+autocmd VimEnter * silent! call coc#util#uninstall_extension('coc-import-cost')
+let g:coc_user_config = {'import-cost.enable': v:false}
+
+" Improved tab completion
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-y>"
+
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Go to definition
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Auto import
+nmap <silent> <leader>ai <Plug>(coc-codeaction) " Nhấn trên import để fix
+inoremap <silent><expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+
+" Format on save (non-Go files)
+autocmd BufWritePre *.js,*.jsx,*.ts,*.tsx,*.html,*.css,*.json silent! call CocAction('format')
+
+" ====== LANGUAGE-SPECIFIC SETTINGS ======
+" TypeScript/React
+autocmd BufNewFile,BufRead *.tsx set filetype=typescriptreact
+autocmd BufNewFile,BufRead *.jsx set filetype=javascriptreact
+
+" Go settings (disable coc-go to prevent conflicts)
+let g:go_code_completion_enabled = 0
+let g:go_fmt_autosave = 0
+let g:go_def_mapping_enabled = 0
+let g:go_doc_keywordprg_enabled = 0
+let g:go_gopls_enabled = 0
+let g:go_fmt_command = "goimports"
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+
+" Emmet only for relevant filetypes
+let g:user_emmet_install_global = 0
+autocmd FileType html,css,jsx,tsx,typescriptreact,javascriptreact EmmetInstall
+
+" ====== UI ENHANCEMENTS ======
+" Show diagnostics
+nnoremap <silent> <leader>d :call CocActionAsync('diagnosticInfo')<CR>
+
+" Highlight yanked text
+augroup highlight_yank
+  autocmd!
+  autocmd TextYankPost * silent! lua vim.highlight.on_yank({timeout = 200})
+augroup END
+
+" ====== SMART BRACKETS & AUTO IMPORT ======
+" Tự động đóng tag HTML/JSX
+autocmd FileType html,javascriptreact,typescriptreact,jsx,tsx setlocal iskeyword+=-
+
+" auto import cho TypeScript
+autocmd FileType typescript,typescriptreact setlocal formatoptions+=j 
+
+" Tự động organize imports khi save
+autocmd BufWritePre *.ts,*.tsx call CocAction('runCommand', 'editor.action.organizeImport')
+
+" ====== FIX GO CONFLICTS & TERMINAL ISSUES ======
+
+" Tắt hoàn toàn LSP của vim-go để tránh xung đột với coc.nvim
+let g:go_doc_keywordprg_enabled = 0
+let g:go_def_mapping_enabled = 0
+let g:go_code_completion_enabled = 0
+
+" Sử dụng coc.nvim thay vim-go cho LSP
+let g:go_gopls_enabled = 0
+autocmd FileType go setlocal omnifunc=go#complete#Complete
+
+" Cấu hình riêng cho terminal
+if has('nvim')
+  autocmd TermOpen * setlocal nonumber norelativenumber
+  autocmd TermOpen * startinsert
+endif
+
+" ====== KEY MAPPINGS FIXES ======
+" Terminal toggle an toàn
+nnoremap <silent> <C-t> :FloatermToggle<CR>
+tnoremap <silent> <C-t> <C-\><C-n>:FloatermToggle<CR>
+
+let g:floaterm_width = 0.9
+let g:floaterm_height = 0.9
+
+if has('win32') || has('win64')
+  let g:floaterm_shell = 'powershell -NoExit'
+endif
+" Fix conflict with Go commands
+autocmd FileType go nnoremap <buffer> <leader>r :GoRun<CR>
+autocmd FileType go nnoremap <buffer> <leader>b :GoBuild<CR>
+
+" ====== GO-SPECIFIC SETTINGS ======
+autocmd FileType go setlocal noexpandtab
+autocmd FileType go setlocal nolist
+
+" Format Go files với goimports thay vì coc
+autocmd BufWritePre *.go silent! execute '!goimports -w %' | edit
+
+" Disable auto-completion cho Go trong coc (sử dụng vim-go)
+" autocmd FileType go let b:coc_suggest_disable = 1
+
+" ====== FIX NERDTREE CONFLICTS ======
+let g:NERDTreeChDirMode = 2
+let g:NERDTreeRespectWildIgnore = 1
+let g:NERDTreeShowHidden = 1
+
+" ====== CUSTOM COMMANDS ======
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+command! -nargs=0 EslintFix :CocCommand eslint.executeAutofix
+command! -nargs=0 OrganizeImports :call CocAction('runCommand', 'editor.action.organizeImport')
+
 ```
 
 ## 3. coc-settings.json (:CocConfig)
