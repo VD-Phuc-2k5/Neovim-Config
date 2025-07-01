@@ -43,6 +43,7 @@ C:\Users\duyvo\AppData\Local\nvim\
     ├── go.vim              # Go-specific settings
     ├── javascript.vim      # JS/TS settings
     └── html.vim            # HTML/CSS settings
+    └── cs.vim              # Cs settings
 ```
 
 ## 3. C# Workflow
