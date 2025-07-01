@@ -1,0 +1,112 @@
+{
+  "snippets.userSnippetsDirectory": "~/.config/nvim/snippets",
+  "snippets.extends": {
+    "javascriptreact": ["javascript"],
+    "typescriptreact": ["typescript", "javascript"]
+  },
+  "tsserver.tsdk": "node_modules/typescript/lib",
+  // ====== FORMATTING ======
+  "prettier.enable": true,
+  "prettier.semi": true,
+  "prettier.singleQuote": true,
+  "prettier.tabWidth": 2,
+  "prettier.trailingComma": "es5",
+  "prettier.printWidth": 100,
+  "prettier.bracketSpacing": true,
+  "prettier.jsxBracketSameLine": false,
+  "prettier.arrowParens": "avoid",
+  "prettier.endOfLine": "lf",
+
+  "coc.preferences.formatOnSaveFiletypes": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "css",
+    "scss",
+    "less",
+    "html",
+    "json"
+  ],
+
+  // ====== LINTING ======
+  "eslint.enable": true,
+  "eslint.autoFixOnSave": true,
+  "eslint.filetypes": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true
+  },
+
+  // ====== AUTOCOMPLETION ======
+  "suggest.enablePreview": true,
+  "suggest.maxCompleteItemCount": 15,
+  "suggest.timeout": 3000,
+  "suggest.snippetIndicator": " ►",
+
+  // ====== TYPESCRIPT/JAVASCRIPT ======
+  "tsserver.enable": true,
+  "tsserver.formatOnType": true,
+  "tsserver.preferences.includePackageJsonAutoImports": "auto",
+  "tsserver.preferences.importModuleSpecifier": "relative",
+  "tsserver.preferences.quoteStyle": "single",
+  "tsserver.enableJavascript": true,
+  "tsserver.implicitProjectConfig.experimentalDecorators": true,
+  "tsserver.implicitProjectConfig.strictNullChecks": true,
+
+  // ====== EMMET ======
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact",
+    "typescript": "typescriptreact",
+    "vue": "html"
+  },
+  "emmet.showExpandedAbbreviation": "always",
+  "emmet.triggerExpansionOnTab": true,
+
+  // ====== UI & DIAGNOSTICS ======
+  "diagnostic.checkCurrentLine": true,
+  "diagnostic.refreshOnInsertMode": false,
+  "diagnostic.virtualText": true,
+  "diagnostic.virtualTextPrefix": " » ",
+  "diagnostic.virtualTextLines": 1,
+  "diagnostic.errorSign": "✗",
+  "diagnostic.warningSign": "⚠",
+  "diagnostic.infoSign": "ℹ",
+  "diagnostic.hintSign": "➤",
+
+  "signature.enable": true,
+  "signature.target": "float",
+
+  "hover.target": "float",
+  "hover.enable": true,
+
+  // ====== PERFORMANCE OPTIMIZATIONS ======
+  "workspace.ignoredFolders": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.git/**",
+    "**/.next/**",
+    "**/out/**"
+  ],
+  "coc.preferences.extensionUpdateCheck": "weekly",
+  "coc.preferences.currentFunctionSymbolAutoUpdate": true,
+  "javascript.inlayHints.variableTypes.enabled": true,
+  "javascript.inlayHints.parameterNames.enabled": "all",
+  "javascript.inlayHints.parameterTypes.enabled": true,
+  "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
+  "javascript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "javascript.inlayHints.variableTypes.suppressWhenTypeMatchesName": true,
+  "javascript.inlayHints.parameterNames.suppressWhenArgumentMatchesName": true,
+  "typescript.inlayHints.variableTypes.enabled": true,
+  "typescript.inlayHints.parameterTypes.enabled": true,
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "typescript.inlayHints.propertyDeclarationTypes.enabled": true,
+  "typescript.inlayHints.parameterNames.enabled": "all",
+  "typescript.inlayHints.enumMemberValues.enabled": true,
+  "typescript.inlayHints.variableTypes.suppressWhenTypeMatchesName": true,
+  "typescript.inlayHints.parameterNames.suppressWhenArgumentMatchesName": true,
+  "typescript.autoClosingTags": false
+}

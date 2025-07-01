@@ -1,0 +1,538 @@
+" ====== BASIC SETTINGS ======
+set encoding=UTF-8
+set relativenumber
+set number
+set autoindent
+set tabstop=4
+set shiftwidth=4
+set smarttab
+set softtabstop=4
+set mouse=a
+set completeopt=menuone,noinsert,noselect
+set termguicolors
+set clipboard=unnamed,unnamedplus
+set updatetime=300
+set timeoutlen=500
+set hidden
+set nobackup
+set nowritebackup
+set cmdheight=2
+set shortmess+=c
+set signcolumn=yes
+
+" ====== PLUGINS ======
+call plug#begin('~/.config/nvim/plugged')
+
+" --- Giao diện và công cụ ---
+Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'ryanoasis/vim-devicons'
+Plug 'preservim/nerdtree'
+Plug 'Yggdroot/indentLine'
+
+" --- Hỗ trợ React/JS/TS/HTML/CSS ---
+Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
+Plug 'yuezk/vim-js'
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'othree/html5.vim'
+Plug 'hail2u/vim-css3-syntax'
+Plug 'ap/vim-css-color'
+
+" --- Auto Complete, Formatter ---
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'jose-elias-alvarez/null-ls.nvim'
+
+" --- Tìm kiếm nhanh với Telescope ---
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
+" --- Tô màu nâng cao với Treesitter ---
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter-context'
+
+" --- Git integration ---
+Plug 'lewis6991/gitsigns.nvim'
+Plug 'tpope/vim-fugitive'
+
+" --- Bufferline ---
+Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
+
+" --- Terminal nổi ---
+Plug 'voldikss/vim-floaterm'
+
+" --- Debugging ---
+Plug 'williamboman/mason.nvim'
+Plug 'jay-babu/mason-nvim-dap.nvim'
+Plug 'mfussenegger/nvim-dap'
+Plug 'rcarriga/nvim-dap-ui'
+Plug 'theHamsta/nvim-dap-virtual-text'
+
+" --- Công cụ hỗ trợ ---
+Plug 'mattn/emmet-vim'
+Plug 'nvim-neotest/nvim-nio'
+
+call plug#end()
+
+" ====== MÀU SẮC ======
+colorscheme dracula
+
+" ====== AIRLINE CONFIG ======
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
+let g:airline_theme = 'dracula'
+
+" ====== MAPPING ======
+" Leader key
+let mapleader = ' '
+
+" NERDTree
+nnoremap <C-o> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+" Telescope
+nnoremap <C-p> :Telescope find_files<CR>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+
+" Buffer navigation
+nnoremap <silent> <Tab> :bnext<CR>
+nnoremap <silent> <S-Tab> :bprevious<CR>
+nnoremap <silent> <C-c> :bdelete<CR>
+
+" ====== SAVE MAPPING ======
+nnoremap <C-s> :w!<CR>
+inoremap <C-s> <Esc>:w!<CR>a
+
+" Move lines up/down
+nnoremap <A-Up> :m .-2<CR>==
+nnoremap <A-Down> :m .+1<CR>==
+inoremap <A-Up> <Esc>:m .-2<CR>==gi
+inoremap <A-Down> <Esc>:m .+1<CR>==gi
+vnoremap <A-Up> :m '<-2<CR>gv=gv
+vnoremap <A-Down> :m '>+1<CR>gv=gv
+
+" ====== INLAY HINTS CONFIG ======
+lua << EOF
+-- Kiểm tra version Neovim và hỗ trợ inlay hints
+local nvim_version = vim.version()
+local supports_inlay_hints = nvim_version.major > 0 or (nvim_version.major == 0 and nvim_version.minor >= 10)
+
+if not supports_inlay_hints then
+  vim.notify("Inlay hints require Neovim 0.10+. Current version: " .. vim.version(), vim.log.levels.WARN)
+end
+
+-- Biến global để theo dõi trạng thái
+_G.inlay_hints_enabled = false
+
+-- Hàm toggle inlay hints với COC.nvim
+function _G.toggle_inlay_hints()
+  if not supports_inlay_hints then
+    vim.notify("Inlay hints not supported in this Neovim version", vim.log.levels.ERROR)
+    return
+  end
+
+  local bufnr = vim.api.nvim_get_current_buf()
+
+  -- Kiểm tra COC.nvim trước
+  if vim.fn.exists(':CocCommand') == 2 then
+    -- Sử dụng COC.nvim cho inlay hints
+    if _G.inlay_hints_enabled then
+      vim.fn.CocAction('runCommand', 'typescript.preferences.includePackageJsonAutoImports', 'off')
+      vim.notify("COC inlay hints disabled", vim.log.levels.INFO)
+      _G.inlay_hints_enabled = false
+    else
+      vim.fn.CocAction('runCommand', 'typescript.preferences.includePackageJsonAutoImports', 'on')
+      vim.notify("COC inlay hints enabled", vim.log.levels.INFO)
+      _G.inlay_hints_enabled = true
+    end
+    return
+  end
+
+  -- Fallback to native LSP
+  local clients = vim.lsp.get_active_clients({ bufnr = bufnr })
+  local has_inlay_hint_support = false
+
+  for _, client in ipairs(clients) do
+    if client.server_capabilities.inlayHintProvider then
+      has_inlay_hint_support = true
+      break
+    end
+  end
+
+  if not has_inlay_hint_support then
+    vim.notify("No LSP client with inlay hints support found", vim.log.levels.WARN)
+    return
+  end
+
+  -- Toggle native inlay hints
+  _G.inlay_hints_enabled = not _G.inlay_hints_enabled
+  vim.lsp.inlay_hint.enable(_G.inlay_hints_enabled, { bufnr = bufnr })
+
+  local status = _G.inlay_hints_enabled and "enabled" or "disabled"
+  vim.notify("Inlay hints " .. status, vim.log.levels.INFO)
+end
+
+-- Auto-enable cho TypeScript/JavaScript với COC
+vim.api.nvim_create_autocmd({'BufEnter', 'BufWinEnter'}, {
+  group = vim.api.nvim_create_augroup('InlayHintsSetup', {}),
+  pattern = {'*.ts', '*.tsx', '*.js', '*.jsx'},
+  callback = function()
+    if supports_inlay_hints and vim.fn.exists(':CocCommand') == 2 then
+      -- Delay để đảm bảo COC đã load
+      vim.defer_fn(function()
+        local bufnr = vim.api.nvim_get_current_buf()
+        local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+        if filetype == 'typescript' or filetype == 'typescriptreact' then
+          _G.inlay_hints_enabled = true
+        end
+      end, 1000)
+    end
+  end,
+})
+
+-- Mapping cho inlay hints
+vim.keymap.set('n', '<leader>ih', _G.toggle_inlay_hints, {desc = 'Toggle inlay hints'})
+EOF
+
+" ====== CÀI ĐẶT COC INLAY HINTS ======
+" Bật inlay hints cho TypeScript trong COC
+autocmd FileType typescript,typescriptreact,javascript,javascriptreact call coc#config('typescript.inlayHints.parameterNames.enabled', 'all')
+autocmd FileType typescript,typescriptreact,javascript,javascriptreact call coc#config('typescript.inlayHints.parameterTypes.enabled', v:true)
+autocmd FileType typescript,typescriptreact,javascript,javascriptreact call coc#config('typescript.inlayHints.variableTypes.enabled', v:true)
+autocmd FileType typescript,typescriptreact,javascript,javascriptreact call coc#config('typescript.inlayHints.propertyDeclarationTypes.enabled', v:true)
+autocmd FileType typescript,typescriptreact,javascript,javascriptreact call coc#config('typescript.inlayHints.functionLikeReturnTypes.enabled', v:true)
+autocmd FileType typescript,typescriptreact,javascript,javascriptreact call coc#config('typescript.inlayHints.enumMemberValues.enabled', v:true)
+
+" ====== DEBUG SETUP ======
+let g:coc_global_extensions = [
+  \ 'coc-tsserver',
+  \ 'coc-css',
+  \ 'coc-html',
+  \ 'coc-json',
+  \ 'coc-prettier',
+  \ 'coc-snippets',
+  \ 'coc-eslint',
+  \ ]
+
+" ====== CẤU HÌNH EMMET ======
+let g:user_emmet_mode = 'i'
+let g:user_emmet_leader_key = '<C-e>'
+let g:user_emmet_settings = {
+\ 'javascript.jsx': {
+\   'extends': 'jsx',
+\ },
+\ 'typescript.tsx': {
+\   'extends': 'jsx',
+\ },
+\}
+
+" Tab/Shift-Tab trong completion
+autocmd FileType html,css,javascript,javascriptreact,typescriptreact inoremap <buffer><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+autocmd FileType html,css,javascript,javascriptreact,typescriptreact inoremap <buffer><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" Enter để confirm completion
+autocmd FileType html,css,javascript,javascriptreact,typescriptreact inoremap <buffer><expr> <CR>
+      \ pumvisible() ? "\<C-y>" : "\<CR>"
+
+" ====== Mapping COC ======
+nnoremap <silent> K :call CocAction('doHover')<CR>
+nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>qf <Plug>(coc-fix-current)
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Auto format khi lưu file
+autocmd BufWritePre *.js,*.jsx,*.ts,*.tsx,*.html,*.css,*.json :call CocAction('format')
+
+" Nhận diện file JSX/TSX
+augroup filetype_jsx
+  autocmd!
+  autocmd BufNewFile,BufRead *.tsx set filetype=typescriptreact
+  autocmd BufNewFile,BufRead *.jsx set filetype=javascriptreact
+augroup END
+
+lua << EOF
+-- Cấu hình Telescope
+require('telescope').setup{
+  defaults = {
+    file_ignore_patterns = {"node_modules", ".git"},
+    layout_config = {
+      horizontal = {
+        preview_width = 0.6,
+      },
+    },
+  },
+  pickers = {
+    find_files = {
+      hidden = true
+    }
+  }
+}
+
+-- Cấu hình Treesitter
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = { "javascript", "typescript", "tsx", "html", "css", "json", "lua" },
+  sync_install = false,
+  auto_install = true,
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  },
+  indent = {
+    enable = true
+  }
+}
+
+-- Cấu hình Gitsigns
+require('gitsigns').setup()
+
+-- Cấu hình Bufferline
+require("bufferline").setup{}
+EOF
+
+" ====== DEBUG CONFIGURATION ======
+lua << EOF
+-- Cấu hình Mason để quản lý debug adapters
+require("mason").setup({
+  ui = {
+    icons = {
+      package_installed = "✓",
+      package_pending = "➜",
+      package_uninstalled = "✗"
+    }
+  }
+})
+
+-- Cấu hình Mason DAP để tự động cài đặt debug adapters
+require("mason-nvim-dap").setup({
+  ensure_installed = {
+    "node2",
+    "chrome",
+    "js"
+  },
+  automatic_installation = true,
+})
+
+local dap = require('dap')
+local dapui = require('dapui')
+
+-- Cấu hình Node.js debug adapter
+dap.adapters.node2 = {
+  type = 'executable',
+  command = 'node',
+  args = {vim.fn.stdpath("data") .. "/mason/packages/node-debug2-adapter/out/src/nodeDebug.js"},
+}
+
+-- Cấu hình Chrome debug adapter
+dap.adapters.chrome = {
+  type = "executable",
+  command = "node",
+  args = {vim.fn.stdpath("data") .. "/mason/packages/chrome-debug-adapter/out/src/chromeDebug.js"}
+}
+
+-- Cấu hình debug cho JavaScript
+dap.configurations.javascript = {
+  {
+    name = "Launch Node.js Program",
+    type = "node2",
+    request = "launch",
+    program = "${file}",
+    cwd = vim.fn.getcwd(),
+    sourceMaps = true,
+    protocol = "inspector",
+    console = "integratedTerminal",
+  },
+  {
+    name = "Attach to Node.js Process",
+    type = "node2",
+    request = "attach",
+    processId = require'dap.utils'.pick_process,
+    sourceMaps = true,
+    protocol = "inspector",
+  },
+  {
+    name = "Launch Chrome",
+    type = "chrome",
+    request = "launch",
+    url = "http://localhost:3000",
+    webRoot = "${workspaceFolder}",
+    sourceMaps = true,
+    protocol = "inspector",
+  }
+}
+
+-- Cấu hình debug cho TypeScript
+dap.configurations.typescript = {
+  {
+    name = "Launch TypeScript (ts-node)",
+    type = "node2",
+    request = "launch",
+    program = "${file}",
+    cwd = vim.fn.getcwd(),
+    sourceMaps = true,
+    protocol = "inspector",
+    runtimeExecutable = "ts-node",
+    runtimeArgs = {"--transpile-only"},
+    console = "integratedTerminal",
+  },
+  {
+    name = "Launch TypeScript (tsx)",
+    type = "node2",
+    request = "launch",
+    program = "${file}",
+    cwd = vim.fn.getcwd(),
+    sourceMaps = true,
+    protocol = "inspector",
+    runtimeExecutable = "tsx",
+    console = "integratedTerminal",
+  },
+  {
+    name = "Debug Jest Tests",
+    type = "node2",
+    request = "launch",
+    program = "${workspaceFolder}/node_modules/.bin/jest",
+    args = {"--runInBand", "--no-cache", "${relativeFile}"},
+    cwd = vim.fn.getcwd(),
+    sourceMaps = true,
+    protocol = "inspector",
+    console = "integratedTerminal",
+  }
+}
+
+-- Copy configurations cho JSX/TSX
+dap.configurations.javascriptreact = dap.configurations.javascript
+dap.configurations.typescriptreact = dap.configurations.typescript
+
+-- Cấu hình DAP UI
+dapui.setup({
+  icons = { expanded = "▾", collapsed = "▸", current_frame = "▸" },
+  mappings = {
+    expand = { "<CR>", "<2-LeftMouse>" },
+    open = "o",
+    remove = "d",
+    edit = "e",
+    repl = "r",
+    toggle = "t",
+  },
+  layouts = {
+    {
+      elements = {
+        { id = "scopes", size = 0.25 },
+        { id = "breakpoints", size = 0.25 },
+        { id = "stacks", size = 0.25 },
+        { id = "watches", size = 0.25 },
+      },
+      size = 40,
+      position = "left",
+    },
+    {
+      elements = {
+        { id = "repl", size = 0.5 },
+        { id = "console", size = 0.5 },
+      },
+      size = 10,
+      position = "bottom",
+    },
+  },
+})
+
+-- Cấu hình virtual text
+require("nvim-dap-virtual-text").setup({
+  enabled = true,
+  enabled_commands = true,
+  highlight_changed_variables = true,
+  highlight_new_as_changed = false,
+  show_stop_reason = true,
+  commented = false,
+  only_first_definition = true,
+  all_references = false,
+  virt_text_pos = 'eol',
+  all_frames = false,
+  virt_lines = false,
+})
+
+-- Tự động mở/đóng UI khi debug
+dap.listeners.after.event_initialized["dapui_config"] = function()
+  dapui.open()
+end
+
+dap.listeners.before.event_terminated["dapui_config"] = function()
+  dapui.close()
+end
+
+dap.listeners.before.event_exited["dapui_config"] = function()
+  dapui.close()
+end
+EOF
+
+" ====== DEBUG KEYMAPS ======
+" Toggle debug UI - sửa lại mapping
+nnoremap <silent> <C-r> :lua require'dapui'.toggle()<CR>
+nnoremap <silent> <leader>db :lua require'dapui'.toggle()<CR>
+
+" Breakpoint operations
+nnoremap <silent> <leader>bb :lua require'dap'.toggle_breakpoint()<CR>
+nnoremap <silent> <leader>bc :lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
+nnoremap <silent> <leader>bl :lua require'dap'.list_breakpoints()<CR>
+nnoremap <silent> <leader>br :lua require'dap'.clear_breakpoints()<CR>
+
+" Debug controls
+nnoremap <silent> <F5> :lua require'dap'.continue()<CR>
+nnoremap <silent> <F10> :lua require'dap'.step_over()<CR>
+nnoremap <silent> <F11> :lua require'dap'.step_into()<CR>
+nnoremap <silent> <S-F11> :lua require'dap'.step_out()<CR>
+nnoremap <silent> <S-F5> :lua require'dap'.terminate()<CR>
+
+" Debug info
+nnoremap <silent> <leader>dr :lua require'dap'.run_last()<CR>
+nnoremap <silent> <leader>dh :lua require'dap.ui.widgets'.hover()<CR>
+nnoremap <silent> <leader>ds :lua require'dap.ui.widgets'.scopes()<CR>
+
+" Debug REPL
+nnoremap <silent> <leader>dp :lua require'dap'.repl.open()<CR>
+
+" ====== FLOATERM CONFIG ======
+nnoremap <C-t> :FloatermToggle<CR>
+tnoremap <C-t> <C-\><C-n>:FloatermToggle<CR>
+let g:floaterm_width = 0.9
+let g:floaterm_height = 0.9
+
+if has('win32') || has('win64')
+  let g:floaterm_shell = 'powershell -NoExit'
+endif
+
+" Highlight yanked text
+augroup highlight_yank
+    autocmd!
+    autocmd TextYankPost * silent! lua vim.highlight.on_yank({timeout = 300})
+augroup END
+
+" Auto close NERDTree nếu là cửa sổ cuối cùng
+autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+" Git commands
+nnoremap <leader>gs :Git<CR>
+nnoremap <leader>gc :Git commit<CR>
+nnoremap <leader>gp :Git push<CR>
+nnoremap <leader>gl :Git pull<CR>
+
+" ====== COPY/PASTE/UNDO ======
+vnoremap <C-c> "+y
+nnoremap <C-v> "+p
+inoremap <C-v> <Esc>"+pa
+nnoremap <C-z> u
+inoremap <C-z> <Esc>ua
+
+" ====== UTILITY COMMANDS ======
+" Cài đặt dependencies cho debugging
+command! InstallDebugDeps :MasonInstall node-debug2-adapter chrome-debug-adapter js-debug-adapter
+command! InstallTSRuntime :!npm install -g ts-node tsx nodemon
+command! DebugInfo :lua print("DAP Status: " .. vim.inspect(require('dap').status()))
+command! CheckHealth :checkhealth mason | :checkhealth dap
