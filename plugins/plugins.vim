@@ -19,6 +19,9 @@ Plug 'othree/html5.vim'
 Plug 'hail2u/vim-css3-syntax'
 Plug 'ap/vim-css-color'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'OmniSharp/omnisharp-vim'
+Plug 'nickspoons/vim-sharpenup'
+Plug 'dense-analysis/ale'
 
 " LSP & Completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}

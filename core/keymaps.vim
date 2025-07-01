@@ -33,7 +33,11 @@ nnoremap <silent> <leader>d :call CocActionAsync('diagnosticInfo')<CR>
 
 " COC completion
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-y>"
-inoremap <silent><expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+inoremap <silent><expr> <cr> coc#pum#visible() ? coc#_select_confir" C# specific global keymaps
+
+nnoremap <leader>cs :!dotnet new console -n 
+nnoremap <leader>cw :!dotnet new web -n 
+nnoremap <leader>cm :!dotnet new mvc -n m() : "\<C-g>u\<CR>"
 
 function! CheckBackspace() abort
   let col = col('.') - 1
