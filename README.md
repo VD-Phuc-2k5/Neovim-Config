@@ -44,3 +44,27 @@ C:\Users\duyvo\AppData\Local\nvim\
     ├── javascript.vim      # JS/TS settings
     └── html.vim            # HTML/CSS settings
 ```
+
+## 3. C# Workflow
+
+```bash
+1. Tạo project mới:
+cmddotnet new console -n MyProject
+cd MyProject
+nvim Program.cs
+
+2. Các phím tắt C# hữu ích:
+
+<leader>gd - Go to definition
+<leader>ca - Code actions
+<leader>cf - Format code
+<leader>rb - Build project
+<leader>rr - Run project
+<leader>rt - Run tests
+
+
+3. Debug:
+
+:OmniSharpStartServer - Khởi động server
+:OmniSharpStopServer - Dừng se
+```
