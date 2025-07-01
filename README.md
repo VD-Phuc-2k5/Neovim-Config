@@ -66,5 +66,5 @@ nvim Program.cs
 3. Debug:
 
 :OmniSharpStartServer - Khởi động server
-:OmniSharpStopServer - Dừng se
+:OmniSharpStopServer - Dừng server
 ```
