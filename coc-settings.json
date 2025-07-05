@@ -11,7 +11,7 @@
   "prettier.singleQuote": true,
   "prettier.tabWidth": 2,
   "prettier.trailingComma": "es5",
-  "prettier.printWidth": 100,
+  "prettier.printWidth": 65,
   "prettier.bracketSpacing": true,
   "prettier.jsxBracketSameLine": false,
   "prettier.arrowParens": "avoid",
@@ -32,8 +32,18 @@
   // ====== LINTING ======
   "eslint.enable": true,
   "eslint.autoFixOnSave": true,
-  "eslint.filetypes": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.filetypes": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
 
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true,
