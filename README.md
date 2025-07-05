@@ -69,3 +69,38 @@ nvim Program.cs
 :OmniSharpStartServer - Khởi động server
 :OmniSharpStopServer - Dừng server
 ```
+
+## 4. Git WorkFlow
+```bash
+1. Git Log:
+
+<leader>gl - Git log oneline 
+<leader>gL - Git log với graph
+<leader>gla - Git log tất cả branches
+<leader>glp - Git log với patch
+<leader>gls - Git log với statistics
+
+2. File-specific:
+
+<leader>gf - Xem commit history của file hiện tại
+<leader>gw - Xem ai đã sửa file này
+
+3. Git Show:
+
+<leader>gsh - Xem commit cuối cùng (HEAD)
+<leader>gsc - Git show commit 
+
+4. Git Branch:
+
+<leader>gb - Xem danh sách branches
+<leader>gco - Checkout branch
+<leader>gcb - Tạo branch mới
+
+5. Commands:
+
+:GitLog - Git log
+:GitLogGraph - Git log với graph 
+:GitLogAll - Git log tất cả branches
+:GitLogPatch - Git log với code changes
+:GitLogStat - Git log với statistics
+```
