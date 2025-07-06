@@ -1,4 +1,4 @@
-" ====== GIT CONFIGURATION ======
+"====== GIT CONFIGURATION ======
 lua <<EOF
 require('gitsigns').setup {
   signs = {
@@ -79,46 +79,38 @@ require('gitsigns').setup {
 EOF
 
 " ====== VIM SCRIPT KEY MAPPINGS ======
-" Git commands
-nnoremap <leader>gs :Git status<CR>
-nnoremap <leader>gc :Git commit<CR>
-nnoremap <leader>gp :Git push<CR>
-nnoremap <leader>gd :Git diff<CR>
+" Git commands - vertical split
+nnoremap <leader>gs :vertical Git status<CR>
+nnoremap <leader>gc :vertical Git commit<CR>
+nnoremap <leader>gp :vertical Git push<CR>
+nnoremap <leader>gd :vertical Git diff<CR>
+nnoremap <leader>ga :Git add .<CR>
+nnoremap <leader>cf :Git add %<CR>
+nnoremap <leader>re :Git reset HEAD<CR>
 
-" Git log commands
-nnoremap <leader>l :Git log --oneline<CR>
-nnoremap <leader>gl :Git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit<CR>
-nnoremap <leader>gla :Git log --all --graph --decorate --oneline<CR>
-nnoremap <leader>glp :Git log -p<CR>
-nnoremap <leader>gls :Git log --stat<CR>
+" Git log commands - vertical split
+nnoremap <leader>l :vertical Git log --oneline<CR>
+nnoremap <leader>gl :vertical Git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit<CR>
+nnoremap <leader>gla :vertical Git log --all --graph --decorate --oneline<CR>
+nnoremap <leader>glp :vertical Git log -p<CR>
+nnoremap <leader>gls :vertical Git log --stat<CR>
 
-" Git show commit
-nnoremap <leader>gsh :Git show HEAD<CR>
-nnoremap <leader>gsc :Git show 
+" Git show commit - vertical split
+nnoremap <leader>sh :vertical Git show HEAD<CR>
+nnoremap <leader>cm :vertical Git show 
 
-" Git branch
-nnoremap <leader>gb :Git branch<CR>
-nnoremap <leader>gco :Git checkout 
-nnoremap <leader>gcb :Git checkout -b 
+" Git branch - vertical split
+nnoremap <leader>gb :vertical Git branch<CR>
 
-" Toggle git blame cho dòng hiện tại
-nnoremap <leader>gtb :lua require('gitsigns').blame_line{full=true}<CR>
+" Xem commit history của file hiện tại - vertical split
+nnoremap <leader>gf :vertical Git log --follow -- %<CR>
 
-" Xem commit history của file hiện tại
-nnoremap <leader>gf :Git log --follow -- %<CR>
+" Xem ai đã sửa file này - vertical split
+nnoremap <leader>gw :vertical Git log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short -- %<CR>
 
-" Xem ai đã sửa file này
-nnoremap <leader>gw :Git log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short -- %<CR>
-
-" Commands để toggle các tính năng
-command! GitSignsToggle lua require('gitsigns').toggle_signs()
-command! GitBlameToggle lua require('gitsigns').toggle_current_line_blame()
-command! GitNumHlToggle lua require('gitsigns').toggle_numhl()
-command! GitLineHlToggle lua require('gitsigns').toggle_linehl()
-
-" Commands để xem git log
-command! GitLog Git log --oneline
-command! GitLogGraph Git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-command! GitLogAll Git log --all --graph --decorate --oneline
-command! GitLogPatch Git log -p
-command! GitLogStat Git log --stat
+" Commands để xem git log - vertical split
+command! GitLog vertical Git log --oneline
+command! GitLogGraph vertical Git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+command! GitLogAll vertical Git log --all --graph --decorate --oneline
+command! GitLogPatch vertical Git log -p
+command! GitLogStat vertical Git log --stat
