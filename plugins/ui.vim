@@ -95,6 +95,21 @@ local function my_on_attach(bufnr)
   vim.keymap.set('n', 'p', api.fs.paste, opts('Paste'))
 end
 
+-- Nvim-tree setup with Git safety checks
+local function safe_git_setup()
+  -- Check if we're in a git repository
+  local git_check = vim.fn.system("git rev-parse --is-inside-work-tree 2>/dev/null")
+  local is_git_repo = vim.v.shell_error == 0
+  
+  return {
+    enable = is_git_repo,
+    ignore = false,
+    show_on_dirs = is_git_repo,
+    show_on_open_dirs = is_git_repo,
+    timeout = 400,
+  }
+end
+
 require('nvim-tree').setup {
   hijack_cursor = true,
   on_attach = my_on_attach,
@@ -138,8 +153,8 @@ require('nvim-tree').setup {
         bookmark = "",
         modified = "●",
         folder = {
-          arrow_closed = "",
-          arrow_open = "",
+          arrow_closed = ">",
+          arrow_open = "v",
           default = "📁",
           open = "📂",
           empty = "📁",
@@ -148,13 +163,13 @@ require('nvim-tree').setup {
           symlink_open = "🔗",
         },
         git = {
-          unstaged = "✗",
-          staged = "✓",
-          unmerged = "",
-          renamed = "➜",
-          untracked = "★",
-          deleted = "",
-          ignored = "◌",
+          unstaged = "M",
+          staged = "S",
+          unmerged = "U",
+          renamed = "R",
+          untracked = "?",
+          deleted = "D",
+          ignored = "I",
         },
       },
     },
@@ -176,19 +191,19 @@ require('nvim-tree').setup {
     args = {},
   },
   diagnostics = {
-    enable = true,
-    show_on_dirs = true,
-    show_on_open_dirs = true,
+    enable = false, -- Disable diagnostics to avoid icon errors
+    show_on_dirs = false,
+    show_on_open_dirs = false,
     debounce_delay = 50,
     severity = {
       min = vim.diagnostic.severity.HINT,
       max = vim.diagnostic.severity.ERROR,
     },
     icons = {
-      hint = "",
-      info = "",
-      warning = "",
-      error = "",
+      hint = "H",
+      info = "I",
+      warning = "W",
+      error = "E",
     },
   },
   filters = {
@@ -203,13 +218,7 @@ require('nvim-tree').setup {
     debounce_delay = 50,
     ignore_dirs = {},
   },
-  git = {
-    enable = true,
-    ignore = false,
-    show_on_dirs = true,
-    show_on_open_dirs = true,
-    timeout = 400,
-  },
+  git = safe_git_setup(),
   actions = {
     use_system_clipboard = true,
     change_dir = {
