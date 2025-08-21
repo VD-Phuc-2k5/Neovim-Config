@@ -18,7 +18,7 @@ let g:coc_user_config = {'import-cost.enable': v:false}
 autocmd BufWritePre *.js,*.jsx,*.ts,*.tsx,*.html,*.css,*.json,*.cs silent! call CocAction('format')
 
 " Auto organize imports
-autocmd BufWritePre *.ts,*.tsx,*.cs call CocAction('runCommand', 'editor.action.organizeImport')
+" autocmd BufWritePre *.ts,*.tsx,*.cs call CocAction('runCommand', 'editor.action.organizeImport')
 
 " OmniSharp Configuration
 let g:OmniSharp_server_stdio = 1
