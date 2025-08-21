@@ -8,30 +8,23 @@
   // ====== FORMATTING ======
   "prettier.enable": true,
   "prettier.semi": true,
-  "prettier.singleQuote": true,
+  "prettier.singleQuote": false,
   "prettier.tabWidth": 2,
   "prettier.trailingComma": "es5",
-  "prettier.printWidth": 65,
+  "prettier.printWidth": 80,
   "prettier.bracketSpacing": true,
-  "prettier.jsxBracketSameLine": false,
   "prettier.arrowParens": "avoid",
   "prettier.endOfLine": "lf",
-
   "coc.preferences.formatOnSaveFiletypes": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
     "css",
     "scss",
     "less",
     "html",
     "json"
   ],
-
   // ====== LINTING ======
   "eslint.enable": true,
-  "eslint.autoFixOnSave": true,
+  "eslint.autoFixOnSave": false,
   "eslint.filetypes": [
     "javascript",
     "javascriptreact",
@@ -44,28 +37,26 @@
     "typescript",
     "typescriptreact"
   ],
-
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
-    "source.organizeImports": true
-  },
-
+  // Tắt hoàn toàn code actions tự động
+  "editor.codeActionsOnSave": {},
   // ====== AUTOCOMPLETION ======
-  "suggest.enablePreview": true,
+  "suggest.acceptSuggestionOnCommitCharacter": true,
   "suggest.maxCompleteItemCount": 15,
-  "suggest.timeout": 3000,
+  "suggest.timeout": 1000,
   "suggest.snippetIndicator": " ►",
-
   // ====== TYPESCRIPT/JAVASCRIPT ======
   "tsserver.enable": true,
-  "tsserver.formatOnType": true,
   "tsserver.preferences.includePackageJsonAutoImports": "auto",
   "tsserver.preferences.importModuleSpecifier": "relative",
   "tsserver.preferences.quoteStyle": "single",
   "tsserver.enableJavascript": true,
   "tsserver.implicitProjectConfig.experimentalDecorators": true,
   "tsserver.implicitProjectConfig.strictNullChecks": true,
-
+  // Tắt organize imports từ TypeScript
+  "tsserver.organizeImportsOnFormat": false,
+  "typescript.preferences.organizeImports": false,
+  "typescript.format.enable": false,
+  "css.format.braceStyle": "expand",
   // ====== EMMET ======
   "emmet.includeLanguages": {
     "javascript": "javascriptreact",
@@ -73,8 +64,6 @@
     "vue": "html"
   },
   "emmet.showExpandedAbbreviation": "always",
-  "emmet.triggerExpansionOnTab": true,
-
   // ====== UI & DIAGNOSTICS ======
   "diagnostic.checkCurrentLine": true,
   "diagnostic.refreshOnInsertMode": false,
@@ -85,13 +74,10 @@
   "diagnostic.warningSign": "⚠",
   "diagnostic.infoSign": "ℹ",
   "diagnostic.hintSign": "➤",
-
   "signature.enable": true,
   "signature.target": "float",
-
   "hover.target": "float",
-  "hover.enable": true,
-
+  "Lua.hover.enable": true,
   // ====== PERFORMANCE OPTIMIZATIONS ======
   "workspace.ignoredFolders": [
     "**/node_modules/**",
@@ -101,7 +87,7 @@
     "**/.next/**",
     "**/out/**"
   ],
-  "coc.preferences.extensionUpdateCheck": "weekly",
+  "extensions.updateCheck": "weekly",
   "coc.preferences.currentFunctionSymbolAutoUpdate": true,
   "typescript.inlayHints.variableTypes.enabled": true,
   "typescript.inlayHints.parameterTypes.enabled": true,
