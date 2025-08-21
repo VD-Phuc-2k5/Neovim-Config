@@ -210,7 +210,7 @@ require('nvim-tree').setup {
     dotfiles = false,
     git_clean = false,
     no_buffer = false,
-    custom = { '^.DS_Store$', '^node_modules$' },
+    custom = { '^.DS_Store$', },
     exclude = {},
   },
   filesystem_watchers = {
