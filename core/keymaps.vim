@@ -17,12 +17,12 @@ nnoremap <S-Tab> :bprevious<CR>
 nnoremap <C-c> :bdelete<CR>
 
 " Save with confirmation
-nnoremap <C-s> :w<CR>:echo "File saved!"<CR>
-inoremap <C-s> <Esc>:w<CR>:echo "File saved!"<CR>a
+nnoremap <C-s> :w!<CR>:echo "File saved!"<CR>
+inoremap <C-s> <Esc>:w!<CR>:echo "File saved!"<CR>a
 
 " Terminal
-nnoremap <silent> <C-t> :FloatermToggle<CR>
-tnoremap <silent> <C-t> <C-\><C-n>:FloatermToggle<CR>
+nnoremap <silent> <C-o> :FloatermToggle<CR>
+tnoremap <silent> <C-o> <C-\><C-n>:FloatermToggle<CR>
 
 " COC keymaps
 nmap <silent> gd <Plug>(coc-definition)
@@ -84,8 +84,8 @@ function! CreateProject(type)
 endfunction
 
 " NvimTree mappings with feedback
-nnoremap <C-f> :NvimTreeToggle<CR>
-nnoremap <C-n> :NvimTreeFindFile<CR>
+nnoremap <C-n> :NvimTreeToggle<CR>
+nnoremap <C-f> :NvimTreeFindFile<CR>
 
 " Enhanced file tree operations
 nnoremap <leader>nf :NvimTreeFocus<CR>
@@ -104,8 +104,3 @@ nnoremap <leader>vr :source $MYVIMRC<CR>:echo "Vimrc reloaded!"<CR>
 
 " Clear search highlighting
 nnoremap <leader>/ :nohl<CR>
-
-" Quick save and quit
-nnoremap <leader>w :w<CR>
-nnoremap <leader>q :q<CR>
-nnoremap <leader>wq :wq<CR>
