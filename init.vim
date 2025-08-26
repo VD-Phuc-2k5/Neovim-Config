@@ -1,15 +1,11 @@
-" init.vim
+" ====== init.vim ======
 let g:config_dir = stdpath('config')
 
-" load core configurations
+" Load core configurations
 execute 'source ' . g:config_dir . '/core/settings.vim'
+execute 'source ' . g:config_dir . '/core/plugins.vim'
 execute 'source ' . g:config_dir . '/core/keymaps.vim'
-execute 'source ' . g:config_dir . '/core/commands.vim'
-
-" load plugins
-execute 'source ' . g:config_dir . '/plugins/plugins.vim'
-execute 'source ' . g:config_dir . '/plugins/ui.vim'
-execute 'source ' . g:config_dir . '/plugins/lsp.vim'
-execute 'source ' . g:config_dir . '/plugins/navigation.vim'
-execute 'source ' . g:config_dir . '/plugins/git.vim'
-execute 'source ' . g:config_dir . '/plugins/utils.vim'
+execute 'source ' . g:config_dir . '/ui/appearance.vim'
+execute 'source ' . g:config_dir . '/lsp/coc.vim'
+execute 'source ' . g:config_dir . '/languages/init.vim'
+execute 'source ' . g:config_dir . '/utils/commands.vim'
