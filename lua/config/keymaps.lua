@@ -44,7 +44,7 @@ keymap("n", "<leader>o", "<cmd>NvimTreeFocus<CR>", { desc = "Focus file explorer
 -- Buffer navigation
 keymap("n", "<Tab>", "<cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
 keymap("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Previous buffer" })
-keymap("n", "<C-c>", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
+keymap("n", "<C-c>", "<cmd>bdelete!<CR>", { desc = "Delete buffer" })
 
 -- NEW: Close current tab/buffer
 keymap("n", "<leader>x", "<cmd>bd<CR>", { desc = "Close current tab/buffer" })
