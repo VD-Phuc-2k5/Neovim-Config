@@ -44,7 +44,6 @@ _G.set_terminal_keymaps = function()
 	vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]], opts)
 	vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], opts)
 end
-
 vim.cmd("autocmd! TermOpen term://* lua _G.set_terminal_keymaps()")
 
 -- Enable inlay hints globally
@@ -58,12 +57,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
--- Set textwidth to 80 for better line length management
+-- Set textwidth to 80 for better line length management with text wrapping
 vim.api.nvim_create_autocmd("BufEnter", {
 	pattern = "*",
 	callback = function()
 		vim.opt_local.textwidth = 80
-		-- Add colorcolumn to show 80 character limit
+		vim.opt_local.wrap = true
+		vim.opt_local.linebreak = true 
+		vim.opt_local.breakindent = true
 		vim.opt_local.colorcolumn = "80"
 	end,
 })
