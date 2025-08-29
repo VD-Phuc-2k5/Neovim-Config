@@ -51,6 +51,7 @@ return {
           end, { 'i', 's' }),
         },
         sources = {
+          { name = 'emmet_vim', priority = 1000},
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },

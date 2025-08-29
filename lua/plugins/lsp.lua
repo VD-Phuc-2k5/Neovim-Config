@@ -17,6 +17,7 @@ return {
 					"ts_ls",
 					"gopls",
 					"clangd",
+					"omnisharp",
 					"cssls",
 					"html",
 					"eslint",
@@ -71,10 +72,30 @@ return {
 
 			-- LSP server configurations
 			local servers = {
-				clangd = {},
+				clangd = {
+					cmd = {
+						"clangd",
+						"--background-index",
+						"--clang-tidy",
+						"--header-insertion=iwyu",
+						"--completion-style=detailed",
+						"--function-arg-placeholders",
+						"--fallback-style=llvm",
+					},
+					init_options = {
+						usePlaceholders = true,
+						completeUnimported = true,
+						clangdFileStatus = true,
+					},
+				},
 				gopls = {
 					settings = {
 						gopls = {
+							completeUnimported = true,
+							usePlaceholders = true,
+							analyses = {
+								unusedparams = true,
+							},
 							hints = {
 								assignVariableTypes = true,
 								compositeLiteralFields = true,
@@ -86,6 +107,34 @@ return {
 							},
 						},
 					},
+				},
+				omnisharp = {
+					cmd = { "omnisharp", "--languageserver", "--hostPID", tostring(vim.fn.getpid()) },
+					settings = {
+						FormattingOptions = {
+							EnableEditorConfigSupport = true,
+							OrganizeImports = nil,
+						},
+						MsBuild = {
+							LoadProjectsOnDemand = nil,
+						},
+						RoslynExtensionsOptions = {
+							EnableAnalyzersSupport = nil,
+							EnableImportCompletion = nil,
+							AnalyzeOpenDocumentsOnly = nil,
+						},
+					},
+					on_attach = function(client, bufnr)
+						on_attach(client, bufnr)
+						client.server_capabilities.semanticTokensProvider = {
+							full = true,
+							legend = {
+								tokenTypes = { "namespace", "type", "class", "enum", "interface", "struct", "typeParameter", "parameter", "variable", "property", "enumMember", "event", "function", "method", "macro", "keyword", "modifier", "comment", "string", "number", "regexp", "operator" },
+								tokenModifiers = { "declaration", "definition", "readonly", "static", "deprecated", "abstract", "async", "modification", "documentation", "defaultLibrary" },
+							},
+							range = true,
+						}
+					end,
 				},
 				ts_ls = {
 					settings = {
@@ -132,12 +181,16 @@ return {
 
 			-- Setup each LSP server individually
 			for server_name, server_config in pairs(servers) do
-				require("lspconfig")[server_name].setup({
+				local setup_config = {
 					capabilities = capabilities,
-					on_attach = on_attach,
+					on_attach = server_config.on_attach or on_attach,
 					settings = server_config.settings,
 					filetypes = server_config.filetypes,
-				})
+					cmd = server_config.cmd,
+					init_options = server_config.init_options,
+				}
+
+				require("lspconfig")[server_name].setup(setup_config)
 			end
 		end,
 	},

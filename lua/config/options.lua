@@ -26,13 +26,23 @@ opt.autoindent = true
 opt.smartindent = true
 
 -- UI
-opt.wrap = false
+opt.wrap = true
+opt.linebreak = true
+opt.breakindent = true
 opt.scrolloff = 8
 opt.sidescrolloff = 8
 opt.cursorline = true
 opt.splitright = true
 opt.splitbelow = true
 opt.hlsearch = true
+
+-- Text formatting
+opt.textwidth = 80
+opt.formatoptions:append("t")  -- Auto-wrap text using textwidth
+opt.formatoptions:append("c")  -- Auto-wrap comments using textwidth
+opt.formatoptions:append("r")  -- Continue comments when pressing Enter
+opt.formatoptions:append("q")  -- Allow formatting comments with gq
+opt.formatoptions:remove("o")  -- Don't continue comments with o/O
 
 -- Folding
 opt.foldcolumn = '1'

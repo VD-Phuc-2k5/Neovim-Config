@@ -4,8 +4,10 @@ return {
 		"mattn/emmet-vim",
 		ft = { "html", "css", "javascript", "typescript", "jsx", "tsx", "vue", "svelte" },
 		config = function()
-			vim.g.user_emmet_install_global = 0
-			vim.g.user_emmet_leader_key = '<Tab>'
+			vim.g.user_emmet_install_global = 1
+			vim.g.user_emmet_leader_key = '<C-y>'
+			vim.g.user_emmet_mode = 'a'
+			vim.g.user_emmet_expandabbr_key = '<CR>'
 			vim.g.user_emmet_settings = {
 				html = {
 					default_attributes = {
@@ -28,12 +30,19 @@ return {
 				},
 			}
 		end,
+		keys = {
+			{ "<C-y>,", "<Plug>(emmet-expand-abbr)", mode = "i", ft = { "html", "css", "javascript", "typescript", "jsx", "tsx", "vue", "svelte" } },
+			{ "<C-y>,", "<Plug>(emmet-expand-abbr)", mode = "v", ft = { "html", "css", "javascript", "typescript", "jsx", "tsx", "vue", "svelte" } },
+			{ "<CR>", "<Plug>(emmet-expand-abbr)", mode = "i", ft = { "html", "css", "javascript", "typescript", "jsx", "tsx", "vue", "svelte" }, desc = "Emmet expand with Enter" },
+		},
 		init = function()
-			vim.api.nvim_create_autocmd("FileType", {
-				pattern = { "html", "css", "javascript", "typescript", "jsx", "tsx", "vue", "svelte" },
-				callback = function()
-					vim.cmd("EmmetInstall")
-				end,
+			vim.g.user_emmet_settings = vim.tbl_deep_extend("force", vim.g.user_emmet_settings or {}, {
+				javascript = {
+					extends = 'jsx',
+				},
+				typescript = {
+					extends = 'tsx',
+				},
 			})
 		end,
 	},

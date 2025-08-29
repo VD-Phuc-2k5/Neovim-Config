@@ -13,10 +13,13 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+
 -- Setup lazy.nvim
 require("lazy").setup({
   -- Import plugin configurations
   { import = "plugins" },
+  { "echasnovski/mini.icons", version = false },
+  { "L3MON4D3/LuaSnip" },
 }, {
   -- Configuration options
   checker = {

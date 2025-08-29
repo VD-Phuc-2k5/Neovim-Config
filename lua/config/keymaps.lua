@@ -46,7 +46,7 @@ keymap("n", "<Tab>", "<cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
 keymap("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Previous buffer" })
 keymap("n", "<C-c>", "<cmd>bdelete!<CR>", { desc = "Delete buffer" })
 
--- NEW: Close current tab/buffer
+-- Close current tab/buffer
 keymap("n", "<leader>x", "<cmd>bd<CR>", { desc = "Close current tab/buffer" })
 keymap("n", "<C-x>", "<cmd>bd<CR>", { desc = "Close current tab/buffer" })
 
@@ -72,6 +72,58 @@ keymap("n", "<C-a>", "ggVG", { desc = "Select all" })
 -- Terminal toggle
 keymap("n", "<leader>t", "<cmd>terminal<CR>", { desc = "Open terminal" })
 keymap("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
-
--- Manual formatting (only when explicitly called)
 keymap("n", "<leader>fm", "<cmd>Format<CR>", { desc = "Format buffer manually" })
+keymap("n", "<leader>gq", "gqq", { desc = "Format current line to 80 chars" })
+keymap("n", "<leader>gp", "gqap", { desc = "Format current paragraph" })
+keymap("v", "gq", "gq", { desc = "Format selected text" })
+keymap("n", "<leader>tw", "<cmd>set wrap!<CR>", { desc = "Toggle text wrap" })
+
+keymap("n", "<leader>bl", function()
+  local line = vim.api.nvim_get_current_line()
+  local cursor_line = vim.fn.line('.')
+  if #line > 80 then
+    local parts = {}
+    local current_part = ""
+    local words = vim.split(line, " ")
+    for _, word in ipairs(words) do
+      if #current_part + #word + 1 <= 80 then
+        if current_part == "" then
+          current_part = word
+        else
+          current_part = current_part .. " " .. word
+        end
+      else
+        table.insert(parts, current_part)
+        current_part = word
+      end
+    end
+    if current_part ~= "" then
+      table.insert(parts, current_part)
+    end
+    vim.api.nvim_buf_set_lines(0, cursor_line - 1, cursor_line, false, parts)
+  end
+end, { desc = "Break long line into multiple lines" })
+
+-- Toggle colorcolumn
+keymap("n", "<leader>cc", function()
+  if vim.wo.colorcolumn == "" then
+    vim.wo.colorcolumn = "80"
+  else
+    vim.wo.colorcolumn = ""
+  end
+end, { desc = "Toggle colorcolumn" })
+
+-- Emmet keymaps cho HTML/CSS
+keymap("i", "<CR>", function()
+  local line = vim.api.nvim_get_current_line()
+  local cursor_pos = vim.api.nvim_win_get_cursor(0)[2]
+  local before_cursor = string.sub(line, 1, cursor_pos)
+  if vim.bo.filetype == "html" or vim.bo.filetype == "css" or 
+     vim.bo.filetype == "javascript" or vim.bo.filetype == "typescript" or
+     vim.bo.filetype == "jsx" or vim.bo.filetype == "tsx" then
+    if string.match(before_cursor, "[%w%.#>%+%*%$%[%]%{%}]+$") then
+      return "<Plug>(emmet-expand-abbr)"
+    end
+  end
+  return "<CR>"
+end, { expr = true, desc = "Emmet expand or normal Enter" })
