@@ -234,27 +234,4 @@ return {
       buftypes = {},
     },
   },
-  
-  -- Auto-pairs for CSS brackets and quotes
-  {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    opts = function(_, opts)
-      local npairs = require("nvim-autopairs")
-      local Rule = require("nvim-autopairs.rule")
-      local cond = require("nvim-autopairs.conds")
-      
-      -- CSS-specific rules
-      npairs.add_rules({
-        Rule("{", "}", { "css", "scss", "sass" })
-          :with_pair(cond.not_after_regex("%w"))
-          :with_move(cond.none()),
-        Rule("(", ")", { "css", "scss", "sass" })
-          :with_pair(cond.not_after_regex("%w"))
-          :with_move(cond.none()),
-      })
-      
-      return opts
-    end,
-  },
 }
