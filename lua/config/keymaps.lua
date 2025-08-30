@@ -2,9 +2,6 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
--- Delete buffer
-vim.keymap.set("n", "<C-d>", "<cmd>bd<CR>", { desc = "Delete Buffer" })
-
 -- Open / Close terminal
 vim.keymap.set(
   "n",
